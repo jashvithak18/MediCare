@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+@theme {
+  --color-med-blue: #0066cc;
+  --color-med-blue-dark: #004a99;
+  --color-med-blue-light: #f0f7ff;
+  --color-med-green: #10b981;
+  --color-med-green-dark: #059669;
+  --color-med-white: #ffffff;
+  
+  --font-nunito: "Nunito", sans-serif;
+  --font-playfair: "Playfair Display", serif;
+}
+
+body {
+  font-family: var(--font-nunito);
+  @apply bg-[#fcfdfe] text-gray-900 antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair);
+  @apply tracking-tight;
+}
+
+.btn-primary {
+  @apply bg-med-blue text-white px-8 py-3 rounded-2xl font-bold hover:bg-med-blue-dark transition-all duration-300 shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply bg-med-green text-white px-8 py-3 rounded-2xl font-bold hover:bg-med-green-dark transition-all duration-300 shadow-lg shadow-green-200/50 flex items-center justify-center gap-2;
+}
+
+.glass-card {
+  @apply bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl;
+}
+
+.section-title {
+  @apply text-4xl md:text-5xl font-bold text-center mb-16 relative inline-block;
+}
+
+.section-title::after {
+  content: '';
+  @apply absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-med-blue rounded-full;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-200 rounded-full hover:bg-blue-300 transition-colors;
+}
