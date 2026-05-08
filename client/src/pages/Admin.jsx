@@ -15,13 +15,45 @@ const Admin = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/${activeTab}`);
+      setData(res.data);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError('Failed to fetch data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) fetchData();
+  }, [activeTab, isLoggedIn]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === 'admin123') {
+      setIsLoggedIn(true);
+      sessionStorage.setItem('adminAuth', 'true');
+    } else {
+      setError('Invalid password');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem('adminAuth');
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this?')) return;
     try {
       let endpoint = '';
-      if (activeTab === 'products') endpoint = `http://localhost:5000/api/products/${id}`;
-      if (activeTab === 'tips') endpoint = `http://localhost:5000/api/healthtips/${id}`;
-      if (activeTab === 'contacts') endpoint = `http://localhost:5000/api/contacts/${id}`; // Note: Backend needs DELETE for contacts if desired
+      if (activeTab === 'products') endpoint = `${import.meta.env.VITE_API_URL}/api/products/${id}`;
+      if (activeTab === 'tips') endpoint = `${import.meta.env.VITE_API_URL}/api/healthtips/${id}`;
+      if (activeTab === 'contacts') endpoint = `${import.meta.env.VITE_API_URL}/api/contacts/${id}`; 
 
       await axios.delete(endpoint);
       fetchData();
@@ -34,8 +66,8 @@ const Admin = () => {
     e.preventDefault();
     try {
       let endpoint = '';
-      if (activeTab === 'products') endpoint = 'http://localhost:5000/api/products';
-      if (activeTab === 'tips') endpoint = 'http://localhost:5000/api/healthtips';
+      if (activeTab === 'products') endpoint = `${import.meta.env.VITE_API_URL}/api/products`;
+      if (activeTab === 'tips') endpoint = `${import.meta.env.VITE_API_URL}/api/healthtips`;
 
       if (editingItem) {
         await axios.put(`${endpoint}/${editingItem._id}`, formData);
@@ -216,7 +248,7 @@ const Admin = () => {
                           <td className="px-8 py-6 text-gray-400 text-xs">{new Date(item.date).toLocaleDateString()}</td>
                           <td className="px-8 py-6 text-right">
                              <a 
-                                href={`http://localhost:5000/${item.prescriptionImage}`} 
+                                href={`${import.meta.env.VITE_API_URL}/${item.prescriptionImage}`} 
                                 target="_blank" 
                                 rel="noreferrer"
                                 className="text-med-blue font-bold text-sm hover:underline"

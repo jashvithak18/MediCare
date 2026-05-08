@@ -41,7 +41,7 @@ const PrescriptionUpload = () => {
     data.append('prescriptionImage', file);
 
     try {
-      await axios.post('http://localhost:5000/api/prescriptions', data);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/prescriptions`, data);
       setSuccess(true);
     } catch (err) {
       console.error('Upload Error:', err);

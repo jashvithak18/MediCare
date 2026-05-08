@@ -12,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const fetchDailyTip = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/dailytip');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/dailytip`);
         setDailyTip(res.data);
       } catch (err) {
         console.error('Error fetching daily tip:', err);
