@@ -21,7 +21,7 @@ const Home = () => {
       }
     };
     fetchDailyTip();
-  }, []);
+  }, [lang]);
 
   const features = [
     { icon: <ShieldCheck size={32} />, title: t('homePage.features.licensedTitle'), desc: t('homePage.features.licensedDesc') },
