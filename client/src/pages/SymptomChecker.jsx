@@ -93,9 +93,32 @@ const SymptomChecker = () => {
                 </div>
               </div>
               
+
               <div className="p-8">
-                <div className="prose prose-blue max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">
-                  {response}
+                <div className="text-gray-700 leading-relaxed space-y-2">
+                  {response.split('\n').map((line, idx) => {
+                    if (!line.trim()) return <div key={idx} className="h-2" />;
+                    // Section heading lines (start with **)
+                    if (line.startsWith('**') && line.endsWith('**')) {
+                      return <p key={idx} className="font-bold text-med-blue text-base mt-4 mb-1">{line.replace(/\*\*/g, '')}</p>;
+                    }
+                    // Inline bold + bullet rendering
+                    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+                    const rendered = parts.map((part, pi) =>
+                      part.startsWith('**') && part.endsWith('**')
+                        ? <strong key={pi} className="font-semibold text-gray-900">{part.replace(/\*\*/g, '')}</strong>
+                        : <span key={pi}>{part}</span>
+                    );
+                    if (line.startsWith('•') || line.startsWith('-')) {
+                      return (
+                        <div key={idx} className="flex gap-2 items-start">
+                          <span className="text-med-blue font-bold mt-0.5">•</span>
+                          <span>{rendered}</span>
+                        </div>
+                      );
+                    }
+                    return <p key={idx}>{rendered}</p>;
+                  })}
                 </div>
 
                 <div className="mt-10 pt-10 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
