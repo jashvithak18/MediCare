@@ -3,11 +3,41 @@ const router = express.Router();
 const https = require('https');
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Groq AI — Free LLM API (Llama 3.1 70B). Get your free key at:
-// https://console.groq.com  → "Create API Key"  → Add as GROQ_API_KEY on Render
+// Dynamic System Prompts (English & Telugu)
 // ─────────────────────────────────────────────────────────────────────────────
+function getSystemPrompt(lang) {
+  const isTelugu = lang === 'te';
+  if (isTelugu) {
+    return `You are a knowledgeable and safe pharmacy assistant at MediCare Plus Pharmacy in Kukatpally, Hyderabad, India.
+You MUST write your entire response in TELUGU language only.
 
-const SYSTEM_PROMPT = `You are a knowledgeable and safe pharmacy assistant at MediCare Plus Pharmacy in Kukatpally, Hyderabad, India.
+STRICT RULES:
+- NEVER diagnose a disease
+- NEVER prescribe specific prescription medicines
+- ONLY suggest freely available OTC medicines and general wellness advice
+- Always recommend seeing a doctor for serious or persistent symptoms
+- Mention Indian brand names where relevant (e.g., Dolo 650, Crocin, Combiflam, Zincovit) in Telugu script or English (e.g., డోలో 650, డీకోల్డ్)
+- Keep responses clear, friendly, and structured in Telugu
+
+For every user query, respond using this EXACT structure:
+
+**🔍 సాధ్యమయ్యే కారణాలు**
+(List 3-5 possible reasons for their symptoms in Telugu)
+
+**💊 సాధారణ సంరక్షణ చిట్కాలు**
+(List 4-5 actionable home care tips in Telugu)
+
+**🛒 మా ఫార్మసీలో అందుబాటులో ఉన్న OTC ఉత్పత్తులు**
+(List 4-5 specific Indian OTC products with their use-case in Telugu)
+
+**⚠️ ఎప్పుడు వైద్యుడిని సంప్రదించాలి**
+(List 3-4 specific warning signs that need medical attention in Telugu)
+
+**📝 నిరాకరణ**
+ఈ సమాచారం కేవలం సాధారణ ఆరోగ్య సమాచారం మాత్రమే — ఇది వైద్య నిర్ధారణ కాదు. తీవ్రమైన లేదా నిరంతర లక్షణాల కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.`;
+  }
+
+  return `You are a knowledgeable and safe pharmacy assistant at MediCare Plus Pharmacy in Kukatpally, Hyderabad, India.
 
 STRICT RULES:
 - NEVER diagnose a disease
@@ -33,10 +63,15 @@ For every user query, respond using this EXACT structure:
 
 **📝 Disclaimer**
 This is general health information only — not a medical diagnosis. Please consult a qualified doctor for persistent or severe symptoms.`;
+}
 
-async function callGeminiAPI(symptoms) {
+// ─────────────────────────────────────────────────────────────────────────────
+// API Calls (Gemini & Groq)
+// ─────────────────────────────────────────────────────────────────────────────
+async function callGeminiAPI(symptoms, lang) {
   return new Promise((resolve, reject) => {
     const apiKey = process.env.GEMINI_API_KEY;
+    const systemInstructionText = getSystemPrompt(lang);
     const body = JSON.stringify({
       contents: [
         {
@@ -47,7 +82,7 @@ async function callGeminiAPI(symptoms) {
       ],
       systemInstruction: {
         parts: [
-          { text: SYSTEM_PROMPT }
+          { text: systemInstructionText }
         ]
       },
       generationConfig: {
@@ -95,12 +130,13 @@ async function callGeminiAPI(symptoms) {
   });
 }
 
-async function callGroqAPI(symptoms) {
+async function callGroqAPI(symptoms, lang) {
   return new Promise((resolve, reject) => {
+    const systemInstructionText = getSystemPrompt(lang);
     const body = JSON.stringify({
       model: 'llama-3.1-70b-versatile',
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: systemInstructionText },
         { role: 'user', content: `Patient symptoms: ${symptoms}` }
       ],
       temperature: 0.4,
@@ -148,12 +184,42 @@ async function callGroqAPI(symptoms) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Fallback mock response used ONLY when GROQ_API_KEY is not set
+// Fallback mock response used ONLY when APIs fail or are not configured
 // ─────────────────────────────────────────────────────────────────────────────
-const getMockResponse = (symptoms) => {
+const getMockResponse = (symptoms, lang) => {
   const s = symptoms.toLowerCase();
+  const isTelugu = lang === 'te';
 
-  if (s.includes('fever') || s.includes('temperature') || s.includes('chills')) {
+  if (s.includes('fever') || s.includes('temperature') || s.includes('chills') || s.includes('జ్వరం')) {
+    if (isTelugu) {
+      return `**🔍 సాధ్యమయ్యే కారణాలు**
+• వైరల్ ఇన్ఫెక్షన్ (జలుబు, ఫ్లూ, కోవిడ్-19)
+• బ్యాక్టీరియల్ ఇన్ఫెక్షన్
+• యూరినరీ ట్రాక్ట్ ఇన్ఫెక్షన్ (UTI)
+• డెంగ్యూ లేదా మలేరియా (ఎక్కువ రోజులు జ్వరం ఉంటే)
+
+**💊 సాధారణ సంరక్షణ చిట్కాలు**
+• బాగా హైడ్రేటెడ్‌గా ఉండండి — నీరు, ORS, కొబ్బరి నీరు తాగండి
+• విశ్రాంతి తీసుకోండి మరియు శారీరక శ్రమను నివారించండి
+• నుదిటిపై చల్లని తడి గుడ్డను ఉంచండి
+• తేలికపాటి దుస్తులను ధరించండి
+• ప్రతి కొన్ని గంటలకొకసారి శరీర ఉష్ణోగ్రతను పర్యవేక్షించండి
+
+**🛒 మా ఫార్మసీలో అందుబాటులో ఉన్న OTC ఉత్పత్తులు**
+• డోలో 650 / క్రోసిన్ — జ్వరం మరియు తలనొప్పి ఉపశమనానికి పారాసెటమాల్
+• కాంబిఫ్లామ్ — ఒంటి నొప్పులతో కూడిన అధిక జ్వరానికి ఐబుప్రోఫెన్
+• ORS (ఎలక్ట్రాల్) — డీహైడ్రేషన్‌ను నివారించడానికి
+• జింకోవిట్ — రోగనిరోధక శక్తిని పెంచడానికి విటమిన్ మద్దతు
+
+**⚠️ ఎప్పుడు వైద్యుడిని సంప్రదించాలి**
+• జ్వరం 103°F (39.4°C) కంటే ఎక్కువగా ఉంటే
+• జ్వరం 3 రోజులకు పైగా తగ్గకపోతే
+• తీవ్రమైన తలనొప్పి, మెడ బిగుతుగా ఉండటం లేదా చర్మంపై దద్దుర్లు ఉంటే
+• 2 సంవత్సరాల కంటే తక్కువ వయస్సు ఉన్న పిల్లలకు జ్వరం వచ్చినప్పుడు
+
+**📝 నిరాకరణ**
+ఈ సమాచారం కేవలం సాధారణ ఆరోగ్య సమాచారం మాత్రమే — ఇది వైద్య నిర్ధారణ కాదు. తీవ్రమైన లేదా నిరంతర లక్షణాల కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.`;
+    }
     return `**🔍 Possible Causes**
 • Viral infection (common cold, flu, COVID-19)
 • Bacterial infection
@@ -183,7 +249,37 @@ const getMockResponse = (symptoms) => {
 This is general health information only — not a medical diagnosis. Please consult a qualified doctor for persistent or severe symptoms.`;
   }
 
-  if (s.includes('headache') || s.includes('migraine')) {
+  if (s.includes('headache') || s.includes('migraine') || s.includes('తలనొప్పి')) {
+    if (isTelugu) {
+      return `**🔍 సాధ్యమయ్యే కారణాలు**
+• ఒత్తిడి లేదా స్క్రీన్ సమయం వల్ల వచ్చే టెన్షన్ తలనొప్పి
+• డీహైడ్రేషన్ (శరీరంలో నీటి కొరత)
+• మైగ్రేన్
+• సైనస్ సమస్యలు
+• అధిక రక్తపోటు (సడన్‌గా తీవ్రంగా వస్తే)
+
+**💊 సాధారణ సంరక్షణ చిట్కాలు**
+• వెంటనే 2-3 గ్లాసుల నీరు తాగండి
+• నిశ్శబ్దంగా, చీకటిగా ఉన్న గదిలో విశ్రాంతి తీసుకోండి
+• నుదిటిపై చల్లటి లేదా వెచ్చని కంప్రెస్ ఉంచండి
+• మొబైల్/ల్యాప్‌టాప్ స్క్రీన్‌లు మరియు పెద్ద శబ్దాలను నివారించండి
+• ప్రశాంతంగా శ్వాస తీసుకోండి
+
+**🛒 మా ఫార్మసీలో అందుబాటులో ఉన్న OTC ఉత్పత్తులు**
+• డోలో 650 — సాధారణ తలనొప్పికి
+• కాంబిఫ్లామ్ — కండరాల నొప్పి మరియు తలనొప్పికి
+• సారిడాన్ — వేగవంతమైన తలనొప్పి ఉపశమనానికి
+• విక్స్ ఇన్హేలర్ — సైనస్ సంబంధిత తలనొప్పికి
+
+**⚠️ ఎప్పుడు వైద్యుడిని సంప్రదించాలి**
+• ఆకస్మికంగా, అత్యంత తీవ్రమైన తలనొప్పి వస్తే
+• చూపు మసకబారడం లేదా తిమ్మిరితో కూడిన తలనొప్పి
+• 3 రోజులకు పైగా తలనొప్పి తగ్గకపోతే
+• తలకు దెబ్బ తగిలిన తర్వాత వచ్చే తలనొప్పి
+
+**📝 నిరాకరణ**
+ఈ సమాచారం కేవలం సాధారణ ఆరోగ్య సమాచారం మాత్రమే — ఇది వైద్య నిర్ధారణ కాదు. తీవ్రమైన లేదా నిరంతర లక్షణాల కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.`;
+    }
     return `**🔍 Possible Causes**
 • Tension headache from stress or screen time
 • Dehydration
@@ -214,7 +310,36 @@ This is general health information only — not a medical diagnosis. Please cons
 This is general health information only — not a medical diagnosis. Please consult a qualified doctor for persistent or severe symptoms.`;
   }
 
-  if (s.includes('stomach') || s.includes('nausea') || s.includes('vomiting') || s.includes('diarrhea') || s.includes('loose') || s.includes('acidity')) {
+  if (s.includes('stomach') || s.includes('nausea') || s.includes('vomiting') || s.includes('diarrhea') || s.includes('loose') || s.includes('acidity') || s.includes('కడుపు') || s.includes('వాంతులు') || s.includes('విరేచనాలు')) {
+    if (isTelugu) {
+      return `**🔍 సాధ్యమయ్యే కారణాలు**
+• అజీర్ణం లేదా అతిగా తినడం
+• ఫుడ్ పాయిజనింగ్ (కలుషిత ఆహారం వల్ల)
+• గ్యాస్ట్రిటిస్ లేదా యాసిడ్ రిఫ్లక్స్
+• వైరల్ గ్యాస్ట్రోఎంటరైటిస్ (కడుపు ఫ్లూ)
+• అసిడిటీ
+
+**💊 సాధారణ సంరక్షణ చిట్కాలు**
+• తేలికపాటి ఆహారం (అన్నం, అరటిపండు, మజ్జిగ అన్నం) తీసుకోండి
+• డీహైడ్రేషన్‌ను నివారించడానికి ORS నీటిని తాగండి
+• కారంగా, నూనెతో కూడిన లేదా బరువైన ఆహారాన్ని నివారించండి
+• గోరువెచ్చని అల్లం లేదా జీలకర్ర నీరు తాగండి
+
+**🛒 మా ఫార్మసీలో అందుబాటులో ఉన్న OTC ఉత్పత్తులు**
+• ఈనో / డైజీన్ / జెలుసిల్ — అసిడిటీ మరియు అజీర్ణానికి
+• ORS (ఎలక్ట్రాల్) — విరేచనాల వల్ల కోల్పోయిన లవణాల పునరుద్ధరణకు
+• వోమిస్టాప్ — వాంతులు మరియు వికారం తగ్గించడానికి
+• పుదీన్‌హరా — గ్యాస్ మరియు కడుపు ఉబ్బరానికి సహజ నివారణ
+
+**⚠️ ఎప్పుడు వైద్యుడిని సంప్రదించాలి**
+• వాంతి లేదా మలంలో రక్తం పడితే
+• జ్వరంతో కూడిన విరేచనాలు 2 రోజుల కంటే ఎక్కువ ఉంటే
+• తీవ్రమైన డీహైడ్రేషన్ సంకేతాలు (కళ్ళు తిరగడం, ముదురు రంగు మూత్రం)
+• కడుపులో భరించలేని నొప్పి ఉంటే
+
+**📝 నిరాకరణ**
+ఈ సమాచారం కేవలం సాధారణ ఆరోగ్య సమాచారం మాత్రమే — ఇది వైద్య నిర్ధారణ కాదు. తీవ్రమైన లేదా నిరంతర లక్షణాల కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.`;
+    }
     return `**🔍 Possible Causes**
 • Indigestion or overeating
 • Food poisoning
@@ -245,6 +370,30 @@ This is general health information only — not a medical diagnosis. Please cons
   }
 
   // Default
+  if (isTelugu) {
+    return `**🔍 మీ లక్షణాలను అర్థం చేసుకోవడం**
+మీరు తెలిపిన లక్షణాలను విశ్లేషిస్తున్నాము: "${symptoms}".
+
+**💊 సాధారణ సంరక్షణ చిట్కాలు**
+• బాగా హైడ్రేటెడ్‌గా ఉండండి — రోజుకు 8-10 గ్లాసుల నీరు తాగండి
+• తగినంత విశ్రాంతి తీసుకోండి మరియు ఒత్తిడికి దూరంగా ఉండండి
+• తేలికపాటి, సమతుల్య ఆహారాన్ని తీసుకోండి
+• వైద్యుల మార్గదర్శకత్వం లేకుండా మందులను వాడకండి
+
+**🛒 మా ఫార్మసీలో అందుబాటులో ఉన్నాయి**
+• మేము అన్ని రకాల ప్రిస్క్రిప్షన్ మరియు OTC మందులను విక్రయిస్తాము
+• మా లైసెన్స్ పొందిన ఫార్మసిస్ట్ మీ సలహాల కోసం అందుబాటులో ఉంటారు
+• సర్జికల్ సామాగ్రి, విటమిన్లు మరియు ఆరోగ్య పరికరాలు అందుబాటులో ఉన్నాయి
+
+**⚠️ ఎప్పుడు వైద్యుడిని సంప్రదించాలి**
+• లక్షణాలు తీవ్రంగా ఉంటే లేదా వేగంగా పెరుగుతుంటే
+• లక్షణాలు 3-5 రోజుల కంటే ఎక్కువ కాలం కొనసాగితే
+• మీకు ఇతర దీర్ఘకాలిక సమస్యలు (మధుమేహం, రక్తపోటు మొదలైనవి) ఉంటే
+• గర్భిణీలు లేదా వృద్ధులు అయితే
+
+**📝 నిరాకరణ**
+ఈ సమాచారం కేవలం సాధారణ ఆరోగ్య సమాచారం మాత్రమే — ఇది వైద్య నిర్ధారణ కాదు. తీవ్రమైన లేదా నిరంతర లక్షణాల కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.`;
+  }
   return `**🔍 Understanding Your Symptoms**
 Thank you for describing your symptoms: "${symptoms}".
 
@@ -274,46 +423,47 @@ This is general health information only — not a medical diagnosis. Please cons
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
   try {
-    const { symptoms } = req.body;
+    const { symptoms, lang } = req.body;
 
     if (!symptoms || !symptoms.trim()) {
       return res.status(400).json({ error: 'Symptoms are required.' });
     }
 
     const trimmedSymptoms = symptoms.trim();
+    const activeLang = lang || 'en';
 
     // Use real AI if GEMINI_API_KEY is configured, or GROQ_API_KEY, otherwise use mock
     if (process.env.GEMINI_API_KEY) {
       try {
-        console.log(`[Symptom Check] Using Gemini AI for: "${trimmedSymptoms}"`);
-        const aiResponse = await callGeminiAPI(trimmedSymptoms);
+        console.log(`[Symptom Check] Using Gemini AI for: "${trimmedSymptoms}" [Lang: ${activeLang}]`);
+        const aiResponse = await callGeminiAPI(trimmedSymptoms, activeLang);
         return res.json({ response: aiResponse, source: 'ai' });
       } catch (aiError) {
         console.error('[Symptom Check] Gemini AI failed, trying Groq fallback:', aiError.message);
         if (process.env.GROQ_API_KEY) {
           try {
-            const groqResponse = await callGroqAPI(trimmedSymptoms);
+            const groqResponse = await callGroqAPI(trimmedSymptoms, activeLang);
             return res.json({ response: groqResponse, source: 'ai' });
           } catch (groqError) {
             console.error('[Symptom Check] Groq AI fallback failed:', groqError.message);
           }
         }
-        const fallback = getMockResponse(trimmedSymptoms);
+        const fallback = getMockResponse(trimmedSymptoms, activeLang);
         return res.json({ response: fallback, source: 'mock' });
       }
     } else if (process.env.GROQ_API_KEY) {
       try {
-        console.log(`[Symptom Check] Using Groq AI for: "${trimmedSymptoms}"`);
-        const aiResponse = await callGroqAPI(trimmedSymptoms);
+        console.log(`[Symptom Check] Using Groq AI for: "${trimmedSymptoms}" [Lang: ${activeLang}]`);
+        const aiResponse = await callGroqAPI(trimmedSymptoms, activeLang);
         return res.json({ response: aiResponse, source: 'ai' });
       } catch (aiError) {
         console.error('[Symptom Check] Groq AI failed, falling back to mock:', aiError.message);
-        const fallback = getMockResponse(trimmedSymptoms);
+        const fallback = getMockResponse(trimmedSymptoms, activeLang);
         return res.json({ response: fallback, source: 'mock' });
       }
     } else {
-      console.log('[Symptom Check] No GEMINI_API_KEY or GROQ_API_KEY — using mock response');
-      const mockResponse = getMockResponse(trimmedSymptoms);
+      console.log(`[Symptom Check] No GEMINI_API_KEY or GROQ_API_KEY — using mock response [Lang: ${activeLang}]`);
+      const mockResponse = getMockResponse(trimmedSymptoms, activeLang);
       return res.json({ response: mockResponse, source: 'mock' });
     }
   } catch (error) {

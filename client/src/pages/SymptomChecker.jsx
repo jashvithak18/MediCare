@@ -20,7 +20,7 @@ const SymptomChecker = () => {
     setResponse(null);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/symptom-check`, { symptoms });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/symptom-check`, { symptoms, lang });
       setResponse(res.data.response || "No response generated.");
     } catch (err) {
       console.error('AI Error:', err);
@@ -44,7 +44,7 @@ const SymptomChecker = () => {
           </div>
           <h1 className="text-4xl font-bold mb-4">{t('symptoms.title')}</h1>
           <p className="text-gray-600 max-w-xl mx-auto font-medium">
-            Describe how you're feeling in simple words. Our AI assistant will help you understand your symptoms.
+            {t('symptoms.desc')}
           </p>
         </div>
 
@@ -130,7 +130,7 @@ const SymptomChecker = () => {
                     className="bg-med-green text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-green-600 transition-all shadow-lg"
                   >
                     <MessageCircle size={24} />
-                    Talk to Our Pharmacist
+                    {t('symptoms.talkPharmacist')}
                   </button>
                 </div>
               </div>
@@ -140,7 +140,7 @@ const SymptomChecker = () => {
 
         <div className="mt-12 text-center text-gray-400 text-sm font-bold flex items-center justify-center gap-2">
           <AlertCircle size={16} />
-          NOT A MEDICAL DIAGNOSIS • AI GENERATED INFORMATION
+          {t('symptoms.infoBanner')}
         </div>
       </div>
     </div>

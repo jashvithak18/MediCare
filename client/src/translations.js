@@ -52,6 +52,9 @@ export const translations = {
       medicines: "Commonly Used Medicines",
       remedies: "Home Remedies",
       disclaimer: "Important Disclaimer: This is AI-generated general information only. Always consult a qualified doctor before taking any medicine.",
+      desc: "Describe how you're feeling in simple words. Our AI assistant will help you understand your symptoms.",
+      talkPharmacist: "Talk to Our Pharmacist",
+      infoBanner: "NOT A MEDICAL DIAGNOSIS • AI GENERATED INFORMATION",
     },
     prescription: {
       title: "Upload Your Prescription",
@@ -205,6 +208,9 @@ export const translations = {
       medicines: "సాధారణంగా ఉపయోగించే మందులు",
       remedies: "చిట్కాలు",
       disclaimer: "ముఖ్యమైన గమనిక: ఇది AI ద్వారా రూపొందించబడిన సాధారణ సమాచారం మాత్రమే. ఏదైనా మందు తీసుకునే ముందు ఎల్లప్పుడూ అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.",
+      desc: "మీరు ఎలా భావిస్తున్నారో సాధారణ పదాలలో వివరించండి. మీ లక్షణాలను అర్థం చేసుకోవడానికి మా AI సహాయకుడు మీకు సహాయం చేస్తాడు.",
+      talkPharmacist: "మా ఫార్మసిస్ట్‌తో మాట్లాడండి",
+      infoBanner: "ఇది వైద్య నిర్ధారణ కాదు • AI ద్వారా రూపొందించబడిన సమాచారం",
     },
     prescription: {
       title: "మీ ప్రిస్క్రిప్షన్‌ను అప్‌లోడ్ చేయండి",
