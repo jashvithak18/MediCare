@@ -228,5 +228,5 @@ app.post('/api/admin/login', (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`MediCare Server v1.1.0 running on port ${PORT} — Symptom AI: Local Mock Mode`);
 });
