@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 
 const CategoryListing = () => {
   const { name } = useParams();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +24,7 @@ const CategoryListing = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products?lang=${lang}`);
         // Filter by category
         const categoryProducts = res.data.filter(p => p.category === categoryName);
         setProducts(categoryProducts);
@@ -35,7 +35,7 @@ const CategoryListing = () => {
       }
     };
     fetchProducts();
-  }, [categoryName]);
+  }, [categoryName, lang]);
 
   // Derive unique brands and subCategories from loaded products
   const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))], [products]);
@@ -53,6 +53,13 @@ const CategoryListing = () => {
     });
   }, [products, searchQuery, priceRange, selectedBrand, selectedSubCategory]);
 
+  const translateCategory = (cat) => {
+    if (!cat) return '';
+    const key = `categories.${cat}`;
+    const translated = t(key);
+    return translated === key ? cat : translated;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,9 +68,9 @@ const CategoryListing = () => {
           <Link to="/" className="p-2 bg-white rounded-xl shadow-sm hover:bg-gray-100 transition-colors">
             <ArrowLeft size={24} className="text-gray-600" />
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">{categoryName}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{translateCategory(categoryName)}</h1>
           <span className="ml-auto bg-med-light-blue text-med-blue px-4 py-1 rounded-full font-bold text-sm">
-            {filteredProducts.length} Items
+            {filteredProducts.length} {t('categories.items')}
           </span>
         </div>
 
@@ -73,7 +80,7 @@ const CategoryListing = () => {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-24">
               <div className="flex items-center gap-2 mb-6 text-gray-900 font-bold text-lg border-b border-gray-100 pb-4">
                 <SlidersHorizontal size={20} />
-                Filters
+                {t('categories.filters')}
               </div>
 
               {/* Search */}
@@ -81,7 +88,7 @@ const CategoryListing = () => {
                 <Search size={18} className="absolute left-3 top-3 text-gray-400" />
                 <input 
                   type="text" 
-                  placeholder="Search in category..." 
+                  placeholder={t('categories.searchCategory')} 
                   className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -91,7 +98,7 @@ const CategoryListing = () => {
               {/* Price Range */}
               <div className="mb-6">
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Max Price: ₹{priceRange}
+                  {t('categories.maxPrice')}: ₹{priceRange}
                 </label>
                 <input 
                   type="range" 
@@ -107,13 +114,13 @@ const CategoryListing = () => {
               {/* Sub Categories */}
               {subCategories.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Sub Category</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('categories.subCategory')}</label>
                   <select 
                     className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                     value={selectedSubCategory}
                     onChange={(e) => setSelectedSubCategory(e.target.value)}
                   >
-                    <option value="">All Types</option>
+                    <option value="">{t('categories.All Types')}</option>
                     {subCategories.map((sub, i) => (
                       <option key={i} value={sub}>{sub}</option>
                     ))}
@@ -124,13 +131,13 @@ const CategoryListing = () => {
               {/* Brands */}
               {brands.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Brand</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('categories.brand')}</label>
                   <select 
                     className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                     value={selectedBrand}
                     onChange={(e) => setSelectedBrand(e.target.value)}
                   >
-                    <option value="">All Brands</option>
+                    <option value="">{t('categories.All Brands')}</option>
                     {brands.map((brand, i) => (
                       <option key={i} value={brand}>{brand}</option>
                     ))}
@@ -147,7 +154,7 @@ const CategoryListing = () => {
                 }}
                 className="w-full py-2 text-sm font-bold text-med-blue bg-med-light-blue rounded-xl hover:bg-med-blue hover:text-white transition-colors"
               >
-                Reset Filters
+                {t('categories.resetFilters')}
               </button>
             </div>
           </div>
@@ -161,8 +168,8 @@ const CategoryListing = () => {
             ) : filteredProducts.length === 0 ? (
               <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                 <Pill size={48} className="mx-auto text-gray-300 mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500">Try adjusting your filters or search query.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('categories.noProducts')}</h3>
+                <p className="text-gray-500">{t('categories.adjustFilters')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLanguage } from './LanguageContext';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
+  const { lang } = useLanguage();
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('medicare_cart');
     return savedCart ? JSON.parse(savedCart) : [];
@@ -14,6 +16,36 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('medicare_cart', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  // Translate cart items on language change
+  useEffect(() => {
+    if (cartItems.length === 0) return;
+    const fetchTranslatedProducts = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products?lang=${lang}`);
+        if (!response.ok) return;
+        const products = await response.json();
+        setCartItems(prevItems => {
+          return prevItems.map(item => {
+            const matchedProduct = products.find(p => p._id === item._id);
+            if (matchedProduct) {
+              return {
+                ...item,
+                name: matchedProduct.name,
+                brand: matchedProduct.brand,
+                category: matchedProduct.category,
+                subCategory: matchedProduct.subCategory
+              };
+            }
+            return item;
+          });
+        });
+      } catch (err) {
+        console.error('Failed to translate cart items:', err);
+      }
+    };
+    fetchTranslatedProducts();
+  }, [lang]);
 
   const addToCart = (product) => {
     setCartItems(prev => {
@@ -58,3 +90,4 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+

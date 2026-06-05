@@ -21,7 +21,7 @@ const Contact = () => {
       setFormData({ name: '', phone: '', message: '' });
     } catch (err) {
       console.error('Contact form error:', err);
-      setError('Failed to send message. Please try again or call us.');
+      setError(t('contactPage.failSend'));
     } finally {
       setLoading(false);
     }

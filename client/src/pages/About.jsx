@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Heart, ShieldCheck, ThumbsUp, Users, History, Target, Award } from 'lucide-react';
 
 const About = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const values = [
     { icon: <Heart className="text-red-500" />, title: t('aboutPage.values.compassionTitle'), desc: t('aboutPage.values.compassionDesc') },
@@ -35,7 +35,7 @@ const About = () => {
                  </div>
               </div>
               <div className="absolute -bottom-10 -left-10 bg-med-blue text-white p-8 rounded-3xl shadow-xl max-w-[250px]">
-                <p className="text-4xl font-bold mb-2">14 Years</p>
+                <p className="text-4xl font-bold mb-2">{lang === 'en' ? '14 Years' : '14 సంవత్సరాలు'}</p>
                 <p className="text-sm font-bold opacity-80">{t('aboutPage.yearsExcellence')}</p>
               </div>
             </div>

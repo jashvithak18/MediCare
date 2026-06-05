@@ -47,8 +47,8 @@ const MedicineReminder = () => {
     setNewReminder({ name: '', time: '', frequency: 'Once Daily', notes: '' });
 
     if (notificationPermission === 'granted') {
-      new Notification('Reminder Set!', {
-        body: `You will be reminded to take ${reminder.name} at ${reminder.time}.`,
+      new Notification(t('reminder.reminderSet'), {
+        body: t('reminder.reminderSetBody').replace('{name}', reminder.name).replace('{time}', reminder.time),
         icon: '/logo192.png'
       });
     }
@@ -66,8 +66,8 @@ const MedicineReminder = () => {
 
       reminders.forEach(r => {
         if (r.time === currentTime && notificationPermission === 'granted') {
-          new Notification('Medicine Time!', {
-            body: `It's time to take your medicine: ${r.name}`,
+          new Notification(t('reminder.medicineTime'), {
+            body: t('reminder.medicineTimeBody').replace('{name}', r.name),
             requireInteraction: true
           });
         }
@@ -86,7 +86,7 @@ const MedicineReminder = () => {
           </div>
           <h1 className="text-4xl font-bold mb-4">{t('reminder.title')}</h1>
           <p className="text-gray-600 font-medium max-w-xl mx-auto">
-            Set reminders for your medications and we'll notify you when it's time to take them.
+            {t('reminder.subtitle')}
           </p>
         </div>
 
@@ -94,13 +94,13 @@ const MedicineReminder = () => {
           <div className="bg-yellow-50 border border-yellow-100 p-6 rounded-2xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4 text-yellow-800">
               <AlertCircle size={24} className="flex-shrink-0" />
-              <p className="font-bold">Notifications are not enabled. Please allow notifications to receive reminders.</p>
+              <p className="font-bold">{t('reminder.notifNotEnabled')}</p>
             </div>
             <button
               onClick={requestPermission}
-              className="bg-yellow-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-yellow-700 transition-all text-sm"
+              className="bg-yellow-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-yellow-700 transition-all text-sm animate-pulse"
             >
-              Enable Notifications
+              {t('reminder.enableNotif')}
             </button>
           </div>
         )}
@@ -167,7 +167,7 @@ const MedicineReminder = () => {
             {reminders.length === 0 ? (
               <div className="bg-white p-16 rounded-3xl border border-dashed border-gray-200 text-center">
                 <Clock className="mx-auto text-gray-300 mb-4" size={48} />
-                <p className="text-gray-400 font-bold">No reminders added yet.</p>
+                <p className="text-gray-400 font-bold">{t('reminder.noReminders')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -204,9 +204,9 @@ const MedicineReminder = () => {
             <div className="mt-12 bg-blue-50 p-6 rounded-3xl border border-blue-100 flex gap-4">
               <Info className="text-med-blue flex-shrink-0" />
               <div>
-                <p className="text-sm text-blue-800 font-bold mb-1">How it works:</p>
+                <p className="text-sm text-blue-800 font-bold mb-1">{t('reminder.howItWorks')}</p>
                 <p className="text-sm text-blue-700 leading-relaxed">
-                  {t('reminder.note')} Keep this tab open in your browser to receive notifications at the set time.
+                  {t('reminder.note')} {t('reminder.keepTabOpen')}
                 </p>
               </div>
             </div>

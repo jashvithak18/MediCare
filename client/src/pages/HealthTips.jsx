@@ -5,15 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Calendar, ArrowRight, X, Loader2 } from 'lucide-react';
 
 const HealthTips = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [tips, setTips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTip, setSelectedTip] = useState(null);
 
+  const translateCategory = (cat) => {
+    if (!cat) return '';
+    const key = `categories.${cat}`;
+    const translated = t(key);
+    return translated === key ? cat : translated;
+  };
+
   useEffect(() => {
     const fetchTips = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/healthtips`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/healthtips?lang=${lang}`);
         setTips(res.data);
       } catch (err) {
         console.error('Error fetching health tips:', err);
@@ -22,7 +29,7 @@ const HealthTips = () => {
       }
     };
     fetchTips();
-  }, []);
+  }, [lang]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-16">
@@ -50,7 +57,7 @@ const HealthTips = () => {
                 <div className="h-48 bg-med-light-blue flex items-center justify-center text-med-blue relative overflow-hidden">
                   <BookOpen size={64} className="opacity-20" />
                   <span className="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                    {tip.category}
+                    {translateCategory(tip.category)}
                   </span>
                 </div>
                 <div className="p-8 flex-grow">
@@ -95,7 +102,7 @@ const HealthTips = () => {
                 </button>
                 
                 <span className="bg-med-light-blue text-med-blue px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 inline-block">
-                  {selectedTip.category}
+                  {translateCategory(selectedTip.category)}
                 </span>
                 <h2 className="text-4xl font-bold mb-6">{selectedTip.title}</h2>
                 <div className="flex items-center gap-2 text-gray-400 text-sm mb-8 font-bold">

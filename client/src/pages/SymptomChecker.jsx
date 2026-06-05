@@ -21,17 +21,17 @@ const SymptomChecker = () => {
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/symptom-check`, { symptoms, lang });
-      setResponse(res.data.response || "No response generated.");
+      setResponse(res.data.response || t('symptoms.noResponse'));
     } catch (err) {
       console.error('AI Error:', err);
-      setError('Sorry, we could not analyze your symptoms right now. Please try again later.');
+      setError(t('symptoms.errorMsg'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleWhatsApp = () => {
-    const msg = `Hello, I just used your AI Symptom Checker for: ${symptoms}. Can I talk to a pharmacist?`;
+    const msg = t('symptoms.whatsappMsg').replace('{symptoms}', symptoms);
     window.open(`https://wa.me/919876543210?text=${encodeURIComponent(msg)}`, '_blank');
   };
 

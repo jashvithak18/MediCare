@@ -14,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const fetchDailyTip = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/dailytip`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/dailytip?lang=${lang}`);
         setDailyTip(res.data);
       } catch (err) {
         console.error('Error fetching daily tip:', err);
@@ -42,10 +42,10 @@ const Home = () => {
   ];
 
   const stats = [
-    { label: t('home.stats.brands'), value: "500+" },
-    { label: t('home.stats.customers'), value: "10,000+" },
-    { label: t('home.stats.experience'), value: "14 Years" },
-    { label: t('home.stats.pharmacists'), value: "Licensed" },
+    { label: lang === 'en' ? "Brands Available" : "బ్రాండ్లు అందుబాటులో ఉన్నాయి", value: "500+" },
+    { label: lang === 'en' ? "Happy Customers" : "సంతోషకరమైన కస్టమర్లు", value: "10,000+" },
+    { label: lang === 'en' ? "Experience" : "అనుభవం", value: lang === 'en' ? "14 Years" : "14 సంవత్సరాలు" },
+    { label: lang === 'en' ? "Pharmacists" : "ఫార్మసిస్ట్‌లు", value: lang === 'en' ? "Licensed" : "లైసెన్స్ పొందిన" },
   ];
 
   return (

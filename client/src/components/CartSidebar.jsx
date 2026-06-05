@@ -1,10 +1,12 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 
 const CartSidebar = () => {
   const { cartItems, isCartOpen, toggleCart, updateQuantity, removeFromCart } = useCart();
+  const { t } = useLanguage();
 
   const totalAmount = cartItems.reduce((acc, item) => acc + ((item.price || 50) * item.quantity), 0);
 
@@ -32,7 +34,7 @@ const CartSidebar = () => {
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                 <ShoppingBag className="text-med-blue" />
-                Your Cart
+                {t('cart.title')}
               </h2>
               <button onClick={toggleCart} className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors">
                 <X size={20} className="text-gray-600" />
@@ -43,7 +45,7 @@ const CartSidebar = () => {
               {cartItems.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
                   <ShoppingBag size={64} className="opacity-20" />
-                  <p>Your cart is empty.</p>
+                  <p>{t('cart.empty')}</p>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -88,18 +90,18 @@ const CartSidebar = () => {
 
             <div className="p-6 border-t border-gray-100 bg-gray-50">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-gray-600 font-bold">Total Amount</span>
+                <span className="text-gray-600 font-bold">{t('cart.totalAmount')}</span>
                 <span className="text-2xl font-bold text-gray-900">₹{totalAmount}</span>
               </div>
               <button 
                 disabled={cartItems.length === 0}
                 className="w-full bg-med-blue text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => {
-                  alert('Checkout functionality would be integrated here!');
+                  alert(t('cart.checkoutAlert'));
                   toggleCart();
                 }}
               >
-                Proceed to Checkout
+                {t('cart.checkout')}
               </button>
             </div>
           </motion.div>

@@ -28,7 +28,7 @@ const Medicines = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products?lang=${lang}`);
         setProducts(res.data);
         setFilteredProducts(res.data);
       } catch (err) {
@@ -92,7 +92,7 @@ const Medicines = () => {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-24">
               <div className="flex items-center gap-2 mb-6 text-gray-900 font-bold text-lg border-b border-gray-100 pb-4">
                 <Filter size={20} />
-                Filters
+                {t('categories.filters')}
               </div>
 
               {/* Search */}
@@ -109,7 +109,7 @@ const Medicines = () => {
 
               {/* Category */}
               <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">{t('categories.subCategory')}</label>
                 <select
                   className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                   value={selectedCategory}
@@ -118,22 +118,27 @@ const Medicines = () => {
                     setSelectedSubCategory('');
                   }}
                 >
-                  {categories.map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
+                  {categories.map(c => {
+                    const key = `categories.${c}`;
+                    const translated = t(key);
+                    const displayName = translated === key ? c : translated;
+                    return (
+                      <option key={c} value={c}>{displayName}</option>
+                    );
+                  })}
                 </select>
               </div>
 
               {/* Sub Categories */}
               {subCategories.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Sub Category</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('categories.subCategory')}</label>
                   <select 
                     className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                     value={selectedSubCategory}
                     onChange={(e) => setSelectedSubCategory(e.target.value)}
                   >
-                    <option value="">All Types</option>
+                    <option value="">{t('categories.All Types')}</option>
                     {subCategories.map((sub, i) => (
                       <option key={i} value={sub}>{sub}</option>
                     ))}
@@ -144,13 +149,13 @@ const Medicines = () => {
               {/* Brands */}
               {brands.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Brand</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('categories.brand')}</label>
                   <select 
                     className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-med-blue"
                     value={selectedBrand}
                     onChange={(e) => setSelectedBrand(e.target.value)}
                   >
-                    <option value="">All Brands</option>
+                    <option value="">{t('categories.All Brands')}</option>
                     {brands.map((brand, i) => (
                       <option key={i} value={brand}>{brand}</option>
                     ))}
@@ -161,7 +166,7 @@ const Medicines = () => {
               {/* Price Range */}
               <div className="mb-6">
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Max Price: ₹{priceRange}
+                  {t('categories.maxPrice')}: ₹{priceRange}
                 </label>
                 <input 
                   type="range" 
@@ -184,7 +189,7 @@ const Medicines = () => {
                 }}
                 className="w-full py-2 text-sm font-bold text-med-blue bg-med-light-blue rounded-xl hover:bg-med-blue hover:text-white transition-colors"
               >
-                Reset Filters
+                {t('categories.resetFilters')}
               </button>
             </div>
           </div>
@@ -197,8 +202,8 @@ const Medicines = () => {
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500">Try adjusting your filters or search query.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('categories.noProducts')}</h3>
+                <p className="text-gray-500">{t('categories.adjustFilters')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

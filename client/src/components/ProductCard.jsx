@@ -8,6 +8,13 @@ const ProductCard = ({ product }) => {
   const { t } = useLanguage();
   const { addToCart } = useCart();
 
+  const translateCategory = (cat) => {
+    if (!cat) return '';
+    const key = `categories.${cat}`;
+    const translated = t(key);
+    return translated === key ? cat : translated;
+  };
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
@@ -24,7 +31,7 @@ const ProductCard = ({ product }) => {
       <div className="flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-2">
           <span className="text-[10px] font-bold uppercase tracking-widest text-med-blue bg-med-light-blue px-2 py-1 rounded">
-            {product.category}
+            {translateCategory(product.category)}
           </span>
           {product.subCategory && (
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 bg-gray-100 px-2 py-1 rounded">
@@ -38,7 +45,7 @@ const ProductCard = ({ product }) => {
         
         <div className="pt-4 border-t border-gray-50 mt-auto flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-xs text-gray-400 font-bold uppercase">Price</span>
+            <span className="text-xs text-gray-400 font-bold uppercase">{t('common.price')}</span>
             <span className="text-xl font-bold text-med-blue">₹{product.price || Math.floor(Math.random() * 500) + 50}</span>
           </div>
           <button
@@ -46,7 +53,7 @@ const ProductCard = ({ product }) => {
             className="bg-med-blue text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <ShoppingCart size={16} />
-            Add
+            {t('common.add')}
           </button>
         </div>
       </div>
@@ -55,3 +62,4 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
+

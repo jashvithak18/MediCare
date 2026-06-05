@@ -27,7 +27,7 @@ const PrescriptionUpload = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      setError('Please select a prescription image.');
+      setError(t('prescriptionPage.selectFileError'));
       return;
     }
 
@@ -45,7 +45,7 @@ const PrescriptionUpload = () => {
       setSuccess(true);
     } catch (err) {
       console.error('Upload Error:', err);
-      setError('Failed to upload. Please check your connection and try again.');
+      setError(t('prescriptionPage.uploadFailError'));
     } finally {
       setLoading(false);
     }
@@ -62,20 +62,20 @@ const PrescriptionUpload = () => {
           <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle size={48} />
           </div>
-          <h2 className="text-3xl font-bold mb-4">{t('prescription.title')} Success!</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('prescriptionPage.successTitle')}</h2>
           <p className="text-gray-600 mb-8 font-medium leading-relaxed">
             {t('prescription.success')}
           </p>
           <div className="bg-green-50 p-6 rounded-2xl border border-green-100 mb-8">
             <p className="text-green-700 font-bold text-sm">
-               We will prepare your medicines in advance so you don't have to wait!
+               {t('prescriptionPage.successAlert')}
             </p>
           </div>
           <button
             onClick={() => window.location.reload()}
             className="w-full bg-med-blue text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all"
           >
-            Upload Another
+            {t('prescriptionPage.uploadAnother')}
           </button>
           <div className="mt-8 pt-8 border-t border-gray-100">
              <button 
@@ -83,7 +83,7 @@ const PrescriptionUpload = () => {
                 className="text-gray-400 font-bold text-sm hover:text-med-blue transition-colors flex items-center justify-center gap-2 mx-auto"
              >
                 <FileText size={16} />
-                Save/Print Confirmation
+                {t('prescriptionPage.printConfirm')}
              </button>
           </div>
         </motion.div>
@@ -140,7 +140,7 @@ const PrescriptionUpload = () => {
                   <input
                     type="text"
                     name="preferredVisitTime"
-                    placeholder="e.g. Tomorrow 10:00 AM"
+                    placeholder={t('prescriptionPage.timePlaceholder')}
                     required
                     className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-med-blue focus:bg-white transition-all font-bold"
                     value={formData.preferredVisitTime}
@@ -156,11 +156,11 @@ const PrescriptionUpload = () => {
                     <Upload className="mx-auto h-12 w-12 text-gray-400" />
                     <div className="flex text-sm text-gray-600">
                       <label className="relative cursor-pointer rounded-md font-bold text-med-blue hover:text-blue-500">
-                        <span>Select a file</span>
+                        <span>{t('prescriptionPage.selectFile')}</span>
                         <input type="file" className="sr-only" onChange={handleFileChange} accept="image/*,application/pdf" />
                       </label>
                     </div>
-                    <p className="text-xs text-gray-500">JPG, PNG, PDF up to 10MB</p>
+                    <p className="text-xs text-gray-500">{t('prescriptionPage.fileTypes')}</p>
                     {file && <p className="text-sm font-bold text-med-green mt-2">{file.name}</p>}
                   </div>
                 </div>
@@ -183,32 +183,32 @@ const PrescriptionUpload = () => {
             <div className="bg-med-light-blue p-8 rounded-3xl border border-blue-100 h-fit">
               <h3 className="text-xl font-bold text-med-blue mb-6 flex items-center gap-2">
                 <Info size={24} />
-                Important Information
+                {t('prescriptionPage.infoTitle')}
               </h3>
               <ul className="space-y-6 text-gray-700">
                 <li className="flex gap-4">
                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold">1</div>
-                   <p className="text-sm font-medium">Upload a clear photo or PDF of your doctor's prescription.</p>
+                   <p className="text-sm font-medium">{t('prescriptionPage.info1')}</p>
                 </li>
                 <li className="flex gap-4">
                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold">2</div>
-                   <p className="text-sm font-medium">Our pharmacist will review the prescription and prepare your medicines.</p>
+                   <p className="text-sm font-medium">{t('prescriptionPage.info2')}</p>
                 </li>
                 <li className="flex gap-4">
                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold">3</div>
-                   <p className="text-sm font-medium">Visit our store in Kukatpally at your preferred time for pickup.</p>
+                   <p className="text-sm font-medium">{t('prescriptionPage.info3')}</p>
                 </li>
                 <li className="flex gap-4">
                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold">4</div>
-                   <p className="text-sm font-medium">Valid prescription is mandatory for scheduled medicines.</p>
+                   <p className="text-sm font-medium">{t('prescriptionPage.info4')}</p>
                 </li>
               </ul>
             </div>
 
             <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-               <h4 className="font-bold mb-4">Privacy Note</h4>
+               <h4 className="font-bold mb-4">{t('prescriptionPage.privacyTitle')}</h4>
                <p className="text-xs text-gray-500 leading-relaxed">
-                  Your prescription and personal details are stored securely and only used to prepare your medicines. We do not share your medical information with third parties.
+                  {t('prescriptionPage.privacyDesc')}
                </p>
             </div>
           </div>
