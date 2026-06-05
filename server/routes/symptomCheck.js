@@ -34,6 +34,67 @@ For every user query, respond using this EXACT structure:
 **📝 Disclaimer**
 This is general health information only — not a medical diagnosis. Please consult a qualified doctor for persistent or severe symptoms.`;
 
+async function callGeminiAPI(symptoms) {
+  return new Promise((resolve, reject) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    const body = JSON.stringify({
+      contents: [
+        {
+          parts: [
+            { text: `Patient symptoms: ${symptoms}` }
+          ]
+        }
+      ],
+      systemInstruction: {
+        parts: [
+          { text: SYSTEM_PROMPT }
+        ]
+      },
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 900
+      }
+    });
+
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) {
+            reject(new Error(parsed.error.message || 'Gemini API error'));
+          } else {
+            const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) resolve(text);
+            else reject(new Error('No content in Gemini response'));
+          }
+        } catch (e) {
+          reject(new Error('Failed to parse Gemini response'));
+        }
+      });
+    });
+
+    req.on('error', reject);
+    req.setTimeout(15000, () => {
+      req.destroy();
+      reject(new Error('Gemini API request timed out'));
+    });
+    req.write(body);
+    req.end();
+  });
+}
+
 async function callGroqAPI(symptoms) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
@@ -221,8 +282,26 @@ router.post('/', async (req, res) => {
 
     const trimmedSymptoms = symptoms.trim();
 
-    // Use real AI if GROQ_API_KEY is configured, otherwise use mock
-    if (process.env.GROQ_API_KEY) {
+    // Use real AI if GEMINI_API_KEY is configured, or GROQ_API_KEY, otherwise use mock
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        console.log(`[Symptom Check] Using Gemini AI for: "${trimmedSymptoms}"`);
+        const aiResponse = await callGeminiAPI(trimmedSymptoms);
+        return res.json({ response: aiResponse, source: 'ai' });
+      } catch (aiError) {
+        console.error('[Symptom Check] Gemini AI failed, trying Groq fallback:', aiError.message);
+        if (process.env.GROQ_API_KEY) {
+          try {
+            const groqResponse = await callGroqAPI(trimmedSymptoms);
+            return res.json({ response: groqResponse, source: 'ai' });
+          } catch (groqError) {
+            console.error('[Symptom Check] Groq AI fallback failed:', groqError.message);
+          }
+        }
+        const fallback = getMockResponse(trimmedSymptoms);
+        return res.json({ response: fallback, source: 'mock' });
+      }
+    } else if (process.env.GROQ_API_KEY) {
       try {
         console.log(`[Symptom Check] Using Groq AI for: "${trimmedSymptoms}"`);
         const aiResponse = await callGroqAPI(trimmedSymptoms);
@@ -233,7 +312,7 @@ router.post('/', async (req, res) => {
         return res.json({ response: fallback, source: 'mock' });
       }
     } else {
-      console.log('[Symptom Check] No GROQ_API_KEY — using mock response');
+      console.log('[Symptom Check] No GEMINI_API_KEY or GROQ_API_KEY — using mock response');
       const mockResponse = getMockResponse(trimmedSymptoms);
       return res.json({ response: mockResponse, source: 'mock' });
     }
