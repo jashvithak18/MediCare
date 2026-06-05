@@ -24,10 +24,10 @@ const Home = () => {
   }, []);
 
   const features = [
-    { icon: <ShieldCheck size={32} />, title: "Licensed & Trusted", desc: "Government approved pharmacy license." },
-    { icon: <Heart size={32} />, title: "Genuine Medicines", desc: "100% authentic and fresh stock." },
-    { icon: <UserCheck size={32} />, title: "Expert Pharmacist", desc: "Consultation available at the store." },
-    { icon: <Award size={32} />, title: "14+ Years Experience", desc: "Serving Kukatpally since 2010." },
+    { icon: <ShieldCheck size={32} />, title: t('homePage.features.licensedTitle'), desc: t('homePage.features.licensedDesc') },
+    { icon: <Heart size={32} />, title: t('homePage.features.genuineTitle'), desc: t('homePage.features.genuineDesc') },
+    { icon: <UserCheck size={32} />, title: t('homePage.features.expertTitle'), desc: t('homePage.features.expertDesc') },
+    { icon: <Award size={32} />, title: t('homePage.features.expTitle'), desc: t('homePage.features.expDesc') },
   ];
 
   const categories = [
@@ -204,9 +204,9 @@ const Home = () => {
                   <Star fill="currentColor" size={20} />
                 </div>
                 <p className="text-gray-600 mb-6 italic">
-                  "The staff is very helpful and they always have the medicines I need. Best pharmacy in Kukatpally."
+                  {t('homePage.testimonialsQuote')}
                 </p>
-                <p className="font-bold">- Customer {i}</p>
+                <p className="font-bold">- {t('homePage.customer')} {i}</p>
               </div>
             ))}
           </div>

@@ -7,10 +7,10 @@ const About = () => {
   const { t } = useLanguage();
 
   const values = [
-    { icon: <Heart className="text-red-500" />, title: "Compassion", desc: "We care for your health like our own family." },
-    { icon: <ShieldCheck className="text-blue-500" />, title: "Quality", desc: "Only genuine, high-quality medications from top brands." },
-    { icon: <ThumbsUp className="text-green-500" />, title: "Integrity", desc: "Transparent pricing and honest medical guidance." },
-    { icon: <Users className="text-purple-500" />, title: "Community", desc: "Proudly serving Kukatpally for over a decade." },
+    { icon: <Heart className="text-red-500" />, title: t('aboutPage.values.compassionTitle'), desc: t('aboutPage.values.compassionDesc') },
+    { icon: <ShieldCheck className="text-blue-500" />, title: t('aboutPage.values.qualityTitle'), desc: t('aboutPage.values.qualityDesc') },
+    { icon: <ThumbsUp className="text-green-500" />, title: t('aboutPage.values.integrityTitle'), desc: t('aboutPage.values.integrityDesc') },
+    { icon: <Users className="text-purple-500" />, title: t('aboutPage.values.communityTitle'), desc: t('aboutPage.values.communityDesc') },
   ];
 
   return (
@@ -20,10 +20,10 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-16">
           <div className="lg:w-1/2">
             <h1 className="text-5xl font-bold text-gray-900 mb-8 leading-tight">
-              Trusted Healthcare Partner Since <span className="text-med-blue">2010</span>
+              {t('aboutPage.title')}
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed font-medium">
-              MediCare Plus Pharmacy was founded with a single mission: to provide the community of Hyderabad with access to genuine medicines and expert pharmaceutical advice.
+              {t('aboutPage.description')}
             </p>
           </div>
           <div className="lg:w-1/2">
@@ -36,7 +36,7 @@ const About = () => {
               </div>
               <div className="absolute -bottom-10 -left-10 bg-med-blue text-white p-8 rounded-3xl shadow-xl max-w-[250px]">
                 <p className="text-4xl font-bold mb-2">14 Years</p>
-                <p className="text-sm font-bold opacity-80">Of Excellence in Healthcare Services</p>
+                <p className="text-sm font-bold opacity-80">{t('aboutPage.yearsExcellence')}</p>
               </div>
             </div>
           </div>
@@ -49,16 +49,16 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="bg-gray-50 p-12 rounded-3xl">
               <Target className="text-med-blue mb-6" size={48} />
-              <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
+              <h2 className="text-3xl font-bold mb-6">{t('aboutPage.missionTitle')}</h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To empower individuals to take control of their health by providing reliable medications, health education, and professional guidance in a caring environment.
+                {t('aboutPage.missionDesc')}
               </p>
             </div>
             <div className="bg-med-blue p-12 rounded-3xl text-white shadow-xl">
               <Award className="text-white/80 mb-6" size={48} />
-              <h2 className="text-3xl font-bold mb-6 text-white">Our Promise</h2>
+              <h2 className="text-3xl font-bold mb-6 text-white">{t('aboutPage.promiseTitle')}</h2>
               <p className="text-blue-50 leading-relaxed text-lg italic">
-                "We promise to never compromise on the quality of medicines and to always be available for our customers when they need medical guidance."
+                {t('aboutPage.promiseDesc')}
               </p>
             </div>
           </div>
@@ -68,7 +68,7 @@ const About = () => {
       {/* Our Values */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center mb-16">Our Core Values</h2>
+          <h2 className="text-4xl font-bold text-center mb-16">{t('aboutPage.valuesTitle')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((v, i) => (
               <motion.div
@@ -90,24 +90,24 @@ const About = () => {
       {/* Certifications */}
       <section className="py-24">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-12">Authorized & Licensed</h2>
+          <h2 className="text-3xl font-bold mb-12">{t('aboutPage.authorizedTitle')}</h2>
           <div className="flex flex-wrap justify-center gap-12 grayscale opacity-40">
              <div className="flex flex-col items-center gap-2">
                 <ShieldCheck size={64} />
-                <span className="font-bold text-sm uppercase tracking-widest">Drug Control Dept</span>
+                <span className="font-bold text-sm uppercase tracking-widest">{t('aboutPage.drugDept')}</span>
              </div>
              <div className="flex flex-col items-center gap-2">
                 <Award size={64} />
-                <span className="font-bold text-sm uppercase tracking-widest">ISO Certified</span>
+                <span className="font-bold text-sm uppercase tracking-widest">{t('aboutPage.isoCertified')}</span>
              </div>
              <div className="flex flex-col items-center gap-2">
                 <Users size={64} />
-                <span className="font-bold text-sm uppercase tracking-widest">PCI Registered</span>
+                <span className="font-bold text-sm uppercase tracking-widest">{t('aboutPage.pciRegistered')}</span>
              </div>
           </div>
           <div className="mt-16 p-8 bg-med-light-blue rounded-3xl border border-blue-100">
-             <p className="text-xl font-bold text-med-blue">Pharmacy License No: TS-PHARM-2010-04521</p>
-             <p className="text-gray-500 mt-2 font-medium">Valid for the state of Telangana, India.</p>
+             <p className="text-xl font-bold text-med-blue">{t('aboutPage.licenseNo')}</p>
+             <p className="text-gray-500 mt-2 font-medium">{t('aboutPage.licenseState')}</p>
           </div>
         </div>
       </section>

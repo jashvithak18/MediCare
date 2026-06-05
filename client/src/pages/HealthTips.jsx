@@ -30,7 +30,7 @@ const HealthTips = () => {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4">{t('nav.tips')}</h1>
           <p className="text-gray-600 max-w-xl mx-auto font-medium">
-            Stay informed with expert health advice and wellness tips from our licensed pharmacists.
+            {t('tipsPage.subtitle')}
           </p>
         </div>
 
@@ -61,7 +61,7 @@ const HealthTips = () => {
                   <h2 className="text-2xl font-bold mb-4 text-gray-900 leading-tight">{tip.title}</h2>
                   <p className="text-gray-600 line-clamp-3 mb-6 text-sm leading-relaxed">{tip.shortDescription}</p>
                   <div className="flex items-center gap-2 text-med-blue font-bold group">
-                    Read More
+                    {t('tipsPage.readMore')}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -109,7 +109,7 @@ const HealthTips = () => {
                 </div>
                 <div className="mt-12 p-6 bg-med-light-blue rounded-2xl border border-blue-100">
                   <p className="text-sm font-bold text-med-blue text-center italic">
-                    Consult our pharmacist for personalized health advice.
+                    {t('tipsPage.consult')}
                   </p>
                 </div>
               </motion.div>
