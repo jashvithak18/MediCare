@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
-import { Loader2, ArrowLeft, SlidersHorizontal, Search } from 'lucide-react';
+import { Loader2, ArrowLeft, SlidersHorizontal, Search, Pill } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const CategoryListing = () => {
