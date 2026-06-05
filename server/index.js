@@ -58,6 +58,9 @@ const Contact = require('./models/Contact');
 const DailyTip = require('./models/DailyTip');
 
 // Routes
+const symptomCheckRoute = require('./routes/symptomCheck');
+app.use('/api/symptom-check', symptomCheckRoute);
+
 // 1. Products
 app.get('/api/products', async (req, res) => {
   try {

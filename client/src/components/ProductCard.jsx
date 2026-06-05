@@ -1,50 +1,54 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { MessageCircle, Pill } from 'lucide-react';
+import { MessageCircle, Pill, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useCart } from '../context/CartContext';
 
 const ProductCard = ({ product }) => {
   const { t } = useLanguage();
-
-  const handleWhatsApp = () => {
-    const message = `Hello MediCare Pharmacy, I want to ask about ${product.name} (${product.brand}). Is it available and what is the price?`;
-    window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, '_blank');
-  };
+  const { addToCart } = useCart();
 
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-all"
+      className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-all relative overflow-hidden"
     >
-      <div className="w-full h-40 bg-gray-50 rounded-xl mb-6 flex items-center justify-center text-med-blue opacity-50">
-        <Pill size={64} />
+      <div className="w-full h-48 bg-gray-50 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+        {product.imageUrl ? (
+          <img src={product.imageUrl} alt={product.name} className="object-cover w-full h-full mix-blend-multiply" />
+        ) : (
+          <Pill size={64} className="text-med-blue opacity-50" />
+        )}
       </div>
 
-      <div className="flex-grow">
+      <div className="flex-grow flex flex-col">
         <div className="flex justify-between items-start mb-2">
           <span className="text-[10px] font-bold uppercase tracking-widest text-med-blue bg-med-light-blue px-2 py-1 rounded">
             {product.category}
           </span>
-          <span className={`text-[10px] font-bold px-2 py-1 rounded ${product.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-            {product.available ? t('common.available') : t('common.notAvailable')}
-          </span>
+          {product.subCategory && (
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 bg-gray-100 px-2 py-1 rounded">
+              {product.subCategory}
+            </span>
+          )}
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-1">{product.name}</h3>
-        <p className="text-sm text-gray-500 mb-4">{product.brand}</p>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-4 italic">"{product.usage}"</p>
-      </div>
-
-      <div className="pt-4 border-t border-gray-50 mt-auto">
-        <p className="text-[10px] text-gray-400 mb-4 text-center italic">
-          {t('common.visitNote')}
-        </p>
-        <button
-          onClick={handleWhatsApp}
-          className="w-full bg-med-green text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
-        >
-          <MessageCircle size={18} />
-          {t('buttons.askPharmacist')}
-        </button>
+        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2">{product.name}</h3>
+        <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
+        <p className="text-xs text-gray-600 line-clamp-2 italic mb-4 flex-grow">{product.description || product.usage}</p>
+        
+        <div className="pt-4 border-t border-gray-50 mt-auto flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-400 font-bold uppercase">Price</span>
+            <span className="text-xl font-bold text-med-blue">₹{product.price || Math.floor(Math.random() * 500) + 50}</span>
+          </div>
+          <button
+            onClick={() => addToCart(product)}
+            className="bg-med-blue text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
+            <ShoppingCart size={16} />
+            Add
+          </button>
+        </div>
       </div>
     </motion.div>
   );

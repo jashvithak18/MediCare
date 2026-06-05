@@ -3,9 +3,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { Search, ShieldCheck, Heart, UserCheck, Award, Clock, Star, Lightbulb, Pill, Baby, Sparkles, Activity, Bluetooth as Tooth, Eye, Thermometer, Droplet } from 'lucide-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const { t, lang } = useLanguage();
+  const navigate = useNavigate();
   const [dailyTip, setDailyTip] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -29,14 +31,14 @@ const Home = () => {
   ];
 
   const categories = [
-    { icon: <Pill size={24} />, name: lang === 'en' ? "Medicines" : "మందులు" },
-    { icon: <Baby size={24} />, name: lang === 'en' ? "Baby Care" : "శిశు సంరక్షణ" },
-    { icon: <Sparkles size={24} />, name: lang === 'en' ? "Skincare" : "చర్మ సంరక్షణ" },
-    { icon: <Activity size={24} />, name: lang === 'en' ? "Vitamins" : "విటమిన్లు" },
-    { icon: <Thermometer size={24} />, name: lang === 'en' ? "Surgical" : "సర్జికల్" },
-    { icon: <Droplet size={24} />, name: lang === 'en' ? "Ayurvedic" : "ఆయుర్వేదం" },
-    { icon: <Tooth size={24} />, name: lang === 'en' ? "Diabetic Care" : "డయాబెటిక్ కేర్" },
-    { icon: <Eye size={24} />, name: lang === 'en' ? "Eye/Ear Drops" : "కంటి/చెవి డ్రాప్స్" },
+    { icon: <Pill size={24} />, name: lang === 'en' ? "Medicines" : "మందులు", slug: 'Medicines' },
+    { icon: <Baby size={24} />, name: lang === 'en' ? "Baby Care" : "శిశు సంరక్షణ", slug: 'Baby Care' },
+    { icon: <Sparkles size={24} />, name: lang === 'en' ? "Skincare" : "చర్మ సంరక్షణ", slug: 'Skin Care' },
+    { icon: <Activity size={24} />, name: lang === 'en' ? "Vitamins" : "విటమిన్లు", slug: 'Health Supplements' },
+    { icon: <Thermometer size={24} />, name: lang === 'en' ? "Surgical" : "సర్జికల్", slug: 'Surgical' },
+    { icon: <Droplet size={24} />, name: lang === 'en' ? "Ayurvedic" : "ఆయుర్వేదం", slug: 'Ayurvedic' },
+    { icon: <Tooth size={24} />, name: lang === 'en' ? "Diabetic Care" : "డయాబెటిక్ కేర్", slug: 'Diabetic Care' },
+    { icon: <Eye size={24} />, name: lang === 'en' ? "Eye/Ear Drops" : "కంటి/చెవి డ్రాప్స్", slug: 'Eye Drops' },
   ];
 
   const stats = [
@@ -112,12 +114,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* No Delivery Banner */}
-      <div className="bg-red-50 py-4 px-4 border-b border-red-100">
-        <p className="text-center text-red-700 font-bold flex items-center justify-center gap-2">
-          {t('hero.deliveryBanner')}
-        </p>
-      </div>
 
       {/* Why Choose Us */}
       <section className="py-24 bg-white">
@@ -163,6 +159,7 @@ const Home = () => {
             {categories.map((c, i) => (
               <motion.div
                 key={i}
+                onClick={() => navigate(`/category/${encodeURIComponent(c.slug)}`)}
                 whileHover={{ scale: 1.05 }}
                 className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-4 cursor-pointer hover:shadow-md transition-all"
               >

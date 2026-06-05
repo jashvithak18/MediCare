@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { Menu, X, Globe, Phone } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { Menu, X, Globe, Phone, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { lang, toggleLanguage, t } = useLanguage();
+  const { cartItems, toggleCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -56,6 +58,17 @@ const Navbar = () => {
             >
               <Globe size={16} />
               {lang === 'en' ? 'తెలుగు' : 'English'}
+            </button>
+            <button
+              onClick={toggleCart}
+              className="relative p-2 text-gray-600 hover:text-med-blue transition-colors"
+            >
+              <ShoppingBag size={24} />
+              {cartItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-med-blue text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartItems.length}
+                </span>
+              )}
             </button>
             <a
               href="tel:+919876543210"

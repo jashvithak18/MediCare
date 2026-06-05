@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Stethoscope, Send, Loader2, AlertCircle, MessageCircle, Info, Pill, Home as HomeIcon } from 'lucide-react';
+import axios from 'axios';
 
 const SymptomChecker = () => {
   const { t, lang } = useLanguage();
@@ -9,22 +10,6 @@ const SymptomChecker = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState('');
-
-  const mockResponses = {
-    en: {
-      fever: "UNDERSTANDING: You may have a common fever or viral infection.\nMEDICINES: Dolo 650, Calpol, Paracetamol.\nREMEDIES: Drink plenty of water, rest, and use a cool damp cloth on the forehead.\nDISCLAIMER: This is not a diagnosis. Consult a doctor.",
-      cold: "UNDERSTANDING: Symptoms indicate a common cold or nasal congestion.\nMEDICINES: Cetirizine, Allegra, Vicks Vaporub.\nREMEDIES: Steam inhalation, warm salt water gargle.\nDISCLAIMER: This is not a diagnosis. Consult a doctor.",
-      cough: "UNDERSTANDING: You might have throat irritation or a dry/wet cough.\nMEDICINES: Benadryl, Ascoril, Grilinctus.\nREMEDIES: Honey with warm water, ginger tea.\nDISCLAIMER: This is not a diagnosis. Consult a doctor.",
-      headache: "UNDERSTANDING: This could be a tension headache or due to lack of sleep.\nMEDICINES: Crocin, Saridon, Zandu Balm.\nREMEDIES: Rest in a dark quiet room, stay hydrated.\nDISCLAIMER: This is not a diagnosis. Consult a doctor.",
-      stomach: "UNDERSTANDING: Possible indigestion or acidity.\nMEDICINES: Digene, Pantoprazole, ENO.\nREMEDIES: Drink buttermilk, avoid spicy food.\nDISCLAIMER: This is not a diagnosis. Consult a doctor.",
-      generic: "UNDERSTANDING: We have analyzed your symptoms.\nMEDICINES: Please visit our store for appropriate OTC guidance.\nREMEDIES: Maintain healthy hydration and rest.\nDISCLAIMER: This is not a diagnosis. Please consult a doctor for serious issues."
-    },
-    te: {
-      fever: "అవగాహన: మీకు సాధారణ జ్వరం లేదా వైరల్ ఇన్ఫెక్షన్ ఉండవచ్చు.\nమందులు: డోలో 650, కాల్పోల్, పారాసెటమాల్.\nచిట్కాలు: ధారాళంగా నీరు త్రాగాలి, విశ్రాంతి తీసుకోవాలి.\nగమనిక: ఇది రోగ నిర్ధారణ కాదు. వైద్యుడిని సంప్రదించండి.",
-      cold: "అవగాహన: మీకు జలుబు లేదా ముక్కు దిబ్బడ ఉన్నట్లు కనిపిస్తోంది.\nమందులు: సెటిరిజైన్, అలెగ్రా, విక్స్ వేపోరబ్.\nచిట్కాలు: ఆవిరి పట్టడం, గోరువెచ్చని ఉప్పు నీటితో పుక్కిలించడం.\nగమనిక: ఇది రోగ నిర్ధారణ కాదు. వైద్యుడిని సంప్రదించండి.",
-      generic: "అవగాహన: మేము మీ లక్షణాలను విశ్లేషించాము.\nమందులు: సరైన గైడెన్స్ కోసం మా స్టోర్‌ని సందర్శించండి.\nచిట్కాలు: తగినంత నీరు త్రాగాలి మరియు విశ్రాంతి తీసుకోండి.\nగమనిక: ఇది రోగ నిర్ధారణ కాదు. దయచేసి డాక్టర్‌ని సంప్రదించండి."
-    }
-  };
 
   const handleSymptomCheck = async (e) => {
     e.preventDefault();
@@ -34,22 +19,15 @@ const SymptomChecker = () => {
     setError('');
     setResponse(null);
 
-    // Fake loading delay for realism
-    setTimeout(() => {
-      const lowerSymptoms = symptoms.toLowerCase();
-      let res = "";
-      const currentLang = lang === 'te' ? 'te' : 'en';
-
-      if (lowerSymptoms.includes('fever') || lowerSymptoms.includes('జ్వరం')) res = mockResponses[currentLang].fever;
-      else if (lowerSymptoms.includes('cold') || lowerSymptoms.includes('జలుబు')) res = mockResponses[currentLang].cold;
-      else if (lowerSymptoms.includes('cough') || lowerSymptoms.includes('దగ్గు')) res = mockResponses[currentLang].cough || mockResponses[currentLang].generic;
-      else if (lowerSymptoms.includes('headache') || lowerSymptoms.includes('తలనొప్పి')) res = mockResponses[currentLang].headache || mockResponses[currentLang].generic;
-      else if (lowerSymptoms.includes('stomach') || lowerSymptoms.includes('కడుపు నొప్పి')) res = mockResponses[currentLang].stomach || mockResponses[currentLang].generic;
-      else res = mockResponses[currentLang].generic;
-
-      setResponse(res);
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/symptom-check`, { symptoms });
+      setResponse(res.data.response || "No response generated.");
+    } catch (err) {
+      console.error('AI Error:', err);
+      setError('Sorry, we could not analyze your symptoms right now. Please try again later.');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const handleWhatsApp = () => {
