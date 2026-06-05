@@ -28,7 +28,7 @@ const generateProducts = () => {
       subCategory: medSubCategories[i % medSubCategories.length],
       brand: medBrands[i % medBrands.length],
       usage: 'As directed by a physician. Keep out of reach of children.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(medNames[i] || `Medicine ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/EFF6FF/1D4ED8?text=${encodeURIComponent((medNames[i] || `Medicine ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -54,7 +54,7 @@ const generateProducts = () => {
       subCategory: babySubCategories[i % babySubCategories.length],
       brand: babyBrands[i % babyBrands.length],
       usage: 'Use as required for baby care. Safe for daily use.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(babyNames[i] || `Baby Care ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/FFF7ED/C2410C?text=${encodeURIComponent((babyNames[i] || `Baby Care ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -80,7 +80,7 @@ const generateProducts = () => {
       subCategory: skinSubCategories[i % skinSubCategories.length],
       brand: skinBrands[i % skinBrands.length],
       usage: 'Apply gently on clean face or body. Ideal for daily skincare routines.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(skinNames[i] || `Skin Care ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/FDF4FF/7E22CE?text=${encodeURIComponent((skinNames[i] || `Skin Care ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -106,7 +106,7 @@ const generateProducts = () => {
       subCategory: suppSubCategories[i % suppSubCategories.length],
       brand: suppBrands[i % suppBrands.length],
       usage: 'Take 1 tablet/capsule daily after meals or as directed by a physician.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(suppNames[i] || `Supplement ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/F0FDF4/15803D?text=${encodeURIComponent((suppNames[i] || `Supplement ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -132,7 +132,7 @@ const generateProducts = () => {
       subCategory: surgSubCategories[i % surgSubCategories.length],
       brand: surgBrands[i % surgBrands.length],
       usage: 'For first-aid, diagnostic measurement, or surgical hygiene as appropriate.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(surgNames[i] || `Surgical ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/F0F9FF/0369A1?text=${encodeURIComponent((surgNames[i] || `Surgical ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -158,7 +158,7 @@ const generateProducts = () => {
       subCategory: ayurSubCategories[i % ayurSubCategories.length],
       brand: ayurBrands[i % ayurBrands.length],
       usage: 'Take as directed by an Ayurvedic physician or refer to pack instructions.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(ayurNames[i] || `Ayurvedic ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/FEFCE8/854D0E?text=${encodeURIComponent((ayurNames[i] || `Ayurvedic ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -184,7 +184,7 @@ const generateProducts = () => {
       subCategory: diabSubCategories[i % diabSubCategories.length],
       brand: diabBrands[i % diabBrands.length],
       usage: 'Follow user manual instructions for testing devices, or consult doctor for dosage of supplements.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(diabNames[i] || `Diabetic ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/FFF1F2/BE123C?text=${encodeURIComponent((diabNames[i] || `Diabetic ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
@@ -210,7 +210,7 @@ const generateProducts = () => {
       subCategory: eyeEarSubCategories[i % eyeEarSubCategories.length],
       brand: eyeEarBrands[i % eyeEarBrands.length],
       usage: 'Instill 1-2 drops in affected eye/ear as directed by an ophthalmologist or ENT specialist.',
-      imageUrl: `https://via.placeholder.com/300?text=${encodeURIComponent(eyeEarNames[i] || `Drop ${i+1}`)}`,
+      imageUrl: `https://placehold.co/300x300/ECFDF5/065F46?text=${encodeURIComponent((eyeEarNames[i] || `Drop ${i+1}`).substring(0, 20))}`,
       available: true
     });
   }
